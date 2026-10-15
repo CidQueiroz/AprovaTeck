@@ -3,8 +3,44 @@ export interface AIResponse {
   error?: string;
 }
 
+const readApiError = async (res: Response, provider: string) => {
+  try {
+    const body = await res.json();
+    return body.error?.message || `Erro ${provider} HTTP ${res.status}`;
+  } catch {
+    return `Erro ${provider} HTTP ${res.status}`;
+  }
+};
+
+const getGroqModel = async (apiKey: string): Promise<string> => {
+  const res = await fetch('https://api.groq.com/openai/v1/models', {
+    headers: { Authorization: `Bearer ${apiKey}` }
+  });
+
+  if (!res.ok) {
+    throw new Error(await readApiError(res, 'Groq'));
+  }
+
+  const data = await res.json();
+  const models = (data.data || []).map((model: { id: string }) => model.id);
+  const preferred = [
+    'llama-3.3-70b-versatile',
+    'llama-3.1-8b-instant',
+    'openai/gpt-oss-20b',
+    'openai/gpt-oss-120b'
+  ];
+  const model = preferred.find(candidate => models.includes(candidate)) || models.find((id: string) => /llama|gpt/i.test(id));
+
+  if (!model) {
+    throw new Error('Sua chave Groq foi aceita, mas não há um modelo de chat disponível para ela.');
+  }
+
+  return model;
+};
+
 export const callGroq = async (apiKey: string, prompt: string, systemPrompt?: string): Promise<AIResponse> => {
   try {
+    const model = await getGroqModel(apiKey);
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -12,7 +48,7 @@ export const callGroq = async (apiKey: string, prompt: string, systemPrompt?: st
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model,
         messages: [
           ...(systemPrompt ? [{ role: 'system', content: systemPrompt }] : []),
           { role: 'user', content: prompt }
@@ -22,8 +58,7 @@ export const callGroq = async (apiKey: string, prompt: string, systemPrompt?: st
     });
 
     if (!res.ok) {
-      const err = await res.json();
-      return { content: '', error: err.error?.message || `Erro Groq HTTP ${res.status}` };
+      return { content: '', error: await readApiError(res, 'Groq') };
     }
 
     const data = await res.json();
@@ -35,7 +70,25 @@ export const callGroq = async (apiKey: string, prompt: string, systemPrompt?: st
 
 export const callGemini = async (apiKey: string, prompt: string, systemPrompt?: string): Promise<AIResponse> => {
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const modelsRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+    if (!modelsRes.ok) {
+      throw new Error(await readApiError(modelsRes, 'Gemini'));
+    }
+
+    const modelsData = await modelsRes.json();
+    const models = (modelsData.models || []).filter((model: { supportedGenerationMethods?: string[] }) =>
+      model.supportedGenerationMethods?.includes('generateContent')
+    );
+    const preferred = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+    const selectedModel = preferred
+      .map(name => `models/${name}`)
+      .find(name => models.some((model: { name: string }) => model.name === name)) || models[0]?.name;
+
+    if (!selectedModel) {
+      throw new Error('Sua chave Gemini foi aceita, mas não há um modelo compatível com generateContent.');
+    }
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/${selectedModel}:generateContent?key=${apiKey}`;
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -48,8 +101,7 @@ export const callGemini = async (apiKey: string, prompt: string, systemPrompt?: 
     });
 
     if (!res.ok) {
-      const err = await res.json();
-      return { content: '', error: err.error?.message || `Erro Gemini HTTP ${res.status}` };
+      return { content: '', error: await readApiError(res, 'Gemini') };
     }
 
     const data = await res.json();
@@ -90,6 +142,6 @@ export const generateAIAnswer = async (
 
   return {
     content: '',
-    error: `As chaves configuradas não puderam gerar a resposta. ${providerErrors.join(' ')}`
+    error: `A IA não conseguiu gerar a resposta. Motivo: ${providerErrors.join(' ')} Solução: confirme se a chave está ativa, com acesso ao modelo listado pelo provedor, e tente novamente em “Configurar IA”.`
   };
 };
