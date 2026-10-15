@@ -143,13 +143,13 @@ Texto da Prova:
                     
     # SE CHEGOU AQUI: Todas as chaves e todos os modelos bateram o limite (ou cota diária global)
     print("\n[!] TODAS as chaves e modelos do OpenRouter atingiram o limite simultaneamente!")
-    print("[!] Alternando para o Qwen 3B Local para processar esta página...")
+    print("[!] Alternando para o Ornith 1.5 9B Local para processar esta página...")
     try:
         from langchain_ollama import OllamaLLM
-        llm_local = OllamaLLM(model="qwen2.5:3b", temperature=0, format="json")
+        llm_local = OllamaLLM(model="ornith-1.5:9b", temperature=0, format="json")
         resp_text = llm_local.invoke(prompt)
         resp = json.loads(resp_text)
         return resp
     except Exception as e_local:
-        print(f"      [!] Erro no parsing do Qwen Local: {e_local}")
+        print(f"      [!] Erro no parsing do Ornith Local: {e_local}")
         return []

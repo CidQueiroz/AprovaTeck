@@ -12,5 +12,10 @@ langchain-google-genai
 chromadb
 sentence-transformers
 supabase
-
 streamlit-cookies-controller
+
+# PDF Crawler
+pymupdf
+google-generativeai
+groq
+requests

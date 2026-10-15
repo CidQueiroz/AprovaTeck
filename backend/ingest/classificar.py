@@ -104,7 +104,7 @@ for i in range(1, 10):
 
 print(f"[*] Total de LLMs no pool: {len(llm_pool)}")
 
-llm_local = OllamaLLM(model="qwen2.5:3b", temperature=0)
+llm_local = OllamaLLM(model="ornith-1.5:9b", temperature=0)
 
 def get_next_available_llm():
     global current_llm_index
@@ -182,7 +182,7 @@ def processar_questao(args):
 
     # Se nuvem falhou, tenta local
     if not resp or not (resp.get("grupo_escolhido") or resp.get("group_escolhido")):
-        print(f"[{agora_log}] [AVISO] Todas as chaves falharam na Q{q_id}. Usando Qwen 3B Local...")
+        print(f"[{agora_log}] [AVISO] Todas as chaves falharam na Q{q_id}. Usando Ornith 1.5 9B Local...")
         try:
             resp_text = llm_local.invoke(prompt)
             texto_limpo = resp_text.strip()

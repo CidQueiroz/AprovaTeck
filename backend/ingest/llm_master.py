@@ -159,14 +159,14 @@ def texto_para_json_master(texto: str):
                     break
 
     # ---------------------------------------------------------
-    # CAMADA 3: LOCAL QWEN 3B (Otimizado)
+    # CAMADA 3: LOCAL ORNITH 1.5 9B
     # ---------------------------------------------------------
-    print("\n      [Camada 3: Local] ATIVANDO MODO OFFLINE (Qwen 3B)")
+    print("\n      [Camada 3: Local] ATIVANDO MODO OFFLINE (Ornith 1.5 9B)")
     print("      [!] A nuvem bloqueou. O processador local assumiu a extração.")
     try:
         # IMPORTANTE: format="json" removido pois causa um gargalo extremo de processamento na CPU
         # Adicionado num_ctx=8192 para garantir que o modelo consiga ler a página inteira sem truncar!
-        llm_local = OllamaLLM(model="qwen2.5:3b", temperature=0, num_ctx=8192)
+        llm_local = OllamaLLM(model="ornith-1.5:9b", temperature=0, num_ctx=8192)
         resp_text = llm_local.invoke(prompt)
         return extrair_json_da_string(resp_text)
     except Exception as e_local:

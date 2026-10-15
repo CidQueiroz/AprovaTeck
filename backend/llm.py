@@ -146,10 +146,10 @@ def explicar_erro(enunciado, alternativa_correta, alternativa_marcada, acertou=F
             print(f"[!] {info['name']} falhou na explicação. Erro: {e}")
             continue
             
-    print("Todas as chaves da nuvem falharam (Explicar Erro). Usando fallback Qwen Local...")
+    print("Todas as chaves da nuvem falharam (Explicar Erro). Usando fallback Ornith Local...")
     try:
         prompt_str = "\n".join([f"{m.type.upper()}: {m.content}" for m in messages])
-        llm_local = OllamaLLM(model="qwen2.5:3b", temperature=0.1)
+        llm_local = OllamaLLM(model="ornith-1.5:9b", temperature=0.1)
         if stream:
             stream_iter_local = llm_local.stream(prompt_str)
             first_chunk_local = next(stream_iter_local)
@@ -184,9 +184,9 @@ def gerar_conteudo_estudo(grupo, subgrupo, item_nome):
             print(f"[!] {info['name']} falhou no resumo. Tentando fallback...")
             continue
             
-    print("Todas as chaves da nuvem falharam (Resumo). Usando fallback Qwen Local...")
+    print("Todas as chaves da nuvem falharam (Resumo). Usando fallback Ornith Local...")
     try:
-        llm_local = OllamaLLM(model="qwen2.5:3b", temperature=0.5)
+        llm_local = OllamaLLM(model="ornith-1.5:9b", temperature=0.5)
         return llm_local.invoke(prompt)
     except Exception as e2:
         return f"Erro ao gerar conteúdo via Nuvem e Local ({e2})"
@@ -214,9 +214,9 @@ def gerar_questao_inedita(grupo, subgrupo):
             print(f"[!] {info['name']} falhou na geração de questão. Tentando fallback...")
             continue
             
-    print("Todas as chaves da nuvem falharam (Questão Inédita). Usando fallback Qwen Local...")
+    print("Todas as chaves da nuvem falharam (Questão Inédita). Usando fallback Ornith Local...")
     try:
-        llm_local = OllamaLLM(model="qwen2.5:3b", temperature=0.7, format="json", num_predict=2048)
+        llm_local = OllamaLLM(model="ornith-1.5:9b", temperature=0.7, format="json", num_predict=2048)
         resposta = llm_local.invoke(prompt)
         import re
         texto_limpo = resposta.strip()
@@ -228,7 +228,7 @@ def gerar_questao_inedita(grupo, subgrupo):
         if match: texto_limpo = match.group(0)
         return json.loads(texto_limpo)
     except Exception as e2:
-        print(f"Erro no fallback local Qwen: {e2}")
+        print(f"Erro no fallback local Ornith: {e2}")
         return None
 
 def resolver_gabarito_ia(enunciado, alternativas):
@@ -249,7 +249,7 @@ def resolver_gabarito_ia(enunciado, alternativas):
             continue
             
     try:
-        llm_local = OllamaLLM(model="qwen2.5:3b", temperature=0.0)
+        llm_local = OllamaLLM(model="ornith-1.5:9b", temperature=0.0)
         resp = llm_local.invoke(prompt).strip().upper()
         match = re.search(r'\b([A-E])\b', resp)
         if match:
@@ -303,7 +303,7 @@ def mentoria_ia(enunciado, alternativas, letra_escolhida=None, historico=None, s
             
     try:
         prompt_str = "\n".join([f"{m.type.upper()}: {m.content}" for m in messages])
-        llm_local = OllamaLLM(model="qwen2.5:3b", temperature=0.3)
+        llm_local = OllamaLLM(model="ornith-1.5:9b", temperature=0.3)
         if stream:
             stream_iter_local = llm_local.stream(prompt_str)
             first_chunk_local = next(stream_iter_local)
@@ -354,7 +354,7 @@ def conselho_tutor_ia(dados_estatisticos, erros_detalhados, stream=False):
             continue
             
     try:
-        llm_local = OllamaLLM(model="qwen2.5:3b", temperature=0.3)
+        llm_local = OllamaLLM(model="ornith-1.5:9b", temperature=0.3)
         if stream:
             stream_iter_local = llm_local.stream(prompt)
             first_chunk_local = next(stream_iter_local)
@@ -365,11 +365,11 @@ def conselho_tutor_ia(dados_estatisticos, erros_detalhados, stream=False):
                     for chunk in stream_iter_local:
                         txt = _get_chunk_text(chunk)
                         if txt: yield txt
-                    yield "\n\n*(Respondido por: Qwen Local)*"
+                    yield "\n\n*(Respondido por: Ornith Local)*"
                 except Exception as e:
                     yield f"\n\n*(Erro no Conselho Local: {str(e)})*"
             return generator_local()
-        return llm_local.invoke(prompt) + "\n\n*(Respondido por: Qwen Local)*"
+        return llm_local.invoke(prompt) + "\n\n*(Respondido por: Ornith Local)*"
     except Exception as e2:
         msg = f"Falha ao acionar o Conselho do Tutor. Erro Local: {e2}"
         if stream:

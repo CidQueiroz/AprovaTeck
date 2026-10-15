@@ -1,7 +1,7 @@
 from langchain_community.llms import Ollama
 
 def converter_dump_para_formato(texto_bruto):
-    llm = Ollama(model="qwen2.5:3b", temperature=0)
+    llm = Ollama(model="ornith-1.5:9b", temperature=0)
     
     prompt = f"""
     Você é um extrator de dados de concursos. Converta o texto abaixo no formato de carga para banco de dados.

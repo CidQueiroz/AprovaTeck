@@ -3,7 +3,7 @@ import re
 from langchain_ollama import OllamaLLM
 
 # Usando o modelo 3B para extração mais rápida
-llm = OllamaLLM(model="qwen2.5:3b", temperature=0, format="json", num_predict=2048)
+llm = OllamaLLM(model="ornith-1.5:9b", temperature=0, format="json", num_predict=2048)
 
 def texto_para_json(texto: str):
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAI } from '../../context/AIContext';
 import { Key, ShieldCheck, X } from 'lucide-react';
 
@@ -12,13 +12,31 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onClose }) => 
   const [tempGroq, setTempGroq] = useState(keys.groq);
   const [tempGemini, setTempGemini] = useState(keys.gemini);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      setTempGroq(keys.groq);
+      setTempGemini(keys.gemini);
+      setError('');
+    }
+  }, [isOpen, keys.groq, keys.gemini]);
 
   if (!isOpen) return null;
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    setGroqKey(tempGroq.trim());
-    setGeminiKey(tempGemini.trim());
+    const groqKey = tempGroq.trim();
+    const geminiKey = tempGemini.trim();
+
+    if (!groqKey && !geminiKey) {
+      setError('Adicione sua chave Groq ou Gemini para liberar os recursos de IA.');
+      return;
+    }
+
+    setGroqKey(groqKey);
+    setGeminiKey(geminiKey);
+    setError('');
     setSaved(true);
     setTimeout(() => {
       setSaved(false);
@@ -77,6 +95,11 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onClose }) => 
         </div>
 
         <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {error && (
+            <p role="alert" style={{ margin: 0, color: 'var(--cor-erro)', fontSize: '0.85rem' }}>
+              {error}
+            </p>
+          )}
           <div>
             <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--cor-texto-muted)', marginBottom: '6px' }}>
               Groq API Key (Modelos rápidos)

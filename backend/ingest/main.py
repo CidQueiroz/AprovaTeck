@@ -27,12 +27,12 @@ def rodar_pipeline(pdf_path):
             print(f"Página {i+1} muito curta ({len(texto_pagina)} caracteres), pulando.")
             continue
 
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] Extraídos {len(texto_pagina)} caracteres. Aguardando processamento da Qwen 3B...")
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] Extraídos {len(texto_pagina)} caracteres. Aguardando processamento do Ornith 1.5 9B...")
         
         try:
             # O modelo processa um bloco pequeno de cada vez
             dados_json = texto_para_json(texto_pagina)
-            print(f"[{datetime.now().strftime('%H:%M:%S')}] Qwen 3B respondeu! Realizando parsing e validação...")
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] Ornith 1.5 9B respondeu! Realizando parsing e validação...")
             
             if dados_json:
                 questoes = validar(dados_json)

@@ -65,15 +65,31 @@ export const generateAIAnswer = async (
   prompt: string,
   systemPrompt?: string
 ): Promise<AIResponse> => {
-  if (keys.groq) {
-    const r = await callGroq(keys.groq, prompt, systemPrompt);
-    if (!r.error) return r;
+  const groqKey = keys.groq?.trim();
+  const geminiKey = keys.gemini?.trim();
+  const providerErrors: string[] = [];
+
+  if (!groqKey && !geminiKey) {
+    return {
+      content: '',
+      error: 'Nenhuma chave de IA válida configurada. Abra “Configurar IA” e adicione sua própria chave Groq ou Gemini.'
+    };
   }
 
-  if (keys.gemini) {
-    const r = await callGemini(keys.gemini, prompt, systemPrompt);
+  if (groqKey) {
+    const r = await callGroq(groqKey, prompt, systemPrompt);
     if (!r.error) return r;
+    providerErrors.push(`Groq: ${r.error}`);
   }
 
-  return { content: '', error: 'Nenhuma chave de IA válida configurada ou erro em todos os provedores.' };
+  if (geminiKey) {
+    const r = await callGemini(geminiKey, prompt, systemPrompt);
+    if (!r.error) return r;
+    providerErrors.push(`Gemini: ${r.error}`);
+  }
+
+  return {
+    content: '',
+    error: `As chaves configuradas não puderam gerar a resposta. ${providerErrors.join(' ')}`
+  };
 };

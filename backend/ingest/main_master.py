@@ -16,7 +16,7 @@ def criar_backup_banco():
 def rodar_pipeline(pdf_path):
     criar_backup_banco()
     doc = fitz.open(pdf_path)
-    print(f"Processando {len(doc)} páginas com Ingestor Master (Groq -> OpenRouter -> Qwen Local)...")
+    print(f"Processando {len(doc)} páginas com Ingestor Master (Groq -> OpenRouter -> Ornith Local)...")
 
     for i, pagina in enumerate(doc):
         print(f"\n--- Processando página {i+1}/{len(doc)} ---")

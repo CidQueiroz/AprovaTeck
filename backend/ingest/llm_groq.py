@@ -94,18 +94,18 @@ Texto da Prova:
                 alternar_chave()
                 if tentativa == max_tentativas:
                     print("\n[!] Todas as chaves do Groq estouraram o limite por minuto!")
-                    print("[!] Alternando para o Qwen 3B Local para processar esta página (enquanto a cota da nuvem reseta)...")
+                    print("[!] Alternando para o Ornith 1.5 9B Local para processar esta página (enquanto a cota da nuvem reseta)...")
                     try:
                         from langchain_ollama import OllamaLLM
-                        llm_local = OllamaLLM(model="qwen2.5:3b", temperature=0, format="json")
+                        llm_local = OllamaLLM(model="ornith-1.5:9b", temperature=0, format="json")
                         resp_text = llm_local.invoke(prompt)
                         resp = json.loads(resp_text)
                         
-                        # O tempo que o Qwen demorou pra rodar localmente (3-4 min) é mais que suficiente 
+                        # O tempo que o Ornith demorou pra rodar localmente (3-4 min) é mais que suficiente 
                         # para as cotas do Groq (60s) resetarem sozinhas!
                         return resp
                     except Exception as e_local:
-                        print(f"Erro no parsing do Qwen Local: {e_local}")
+                        print(f"Erro no parsing do Ornith Local: {e_local}")
                         return []
             else:
                 # Erro de parsing JSON
