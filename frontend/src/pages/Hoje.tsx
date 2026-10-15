@@ -5,6 +5,7 @@ import { montarPlanoDiario, processarResposta, salvarResumoItem, ItemEstudo } fr
 import { generateAIAnswer } from '../services/aiService';
 import { supabase } from '../config/supabase';
 import { CalendarCheck, Sparkles, CheckCircle2, XCircle, BookOpen, RefreshCw, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 export const Hoje: React.FC = () => {
   const { user } = useAuth();
@@ -185,9 +186,20 @@ export const Hoje: React.FC = () => {
                           border: '1px solid var(--border-color)',
                           fontSize: '0.9rem',
                           lineHeight: 1.6,
-                          whiteSpace: 'pre-line'
+                          whiteSpace: 'pre-wrap',
+                          width: '100%',
+                          minWidth: 0,
+                          maxWidth: '100%',
+                          height: 'auto',
+                          boxSizing: 'border-box',
+                          overflowX: 'auto',
+                          overflowY: 'visible',
+                          overflowWrap: 'anywhere',
+                          wordBreak: 'break-word'
                         }}>
-                          {resumos[item.item_id]}
+                          <div className="ai-markdown-content">
+                            <ReactMarkdown>{resumos[item.item_id]}</ReactMarkdown>
+                          </div>
                         </div>
                       )}
                     </div>

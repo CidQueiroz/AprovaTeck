@@ -4,6 +4,7 @@ import { useAI } from '../context/AIContext';
 import { supabase } from '../config/supabase';
 import { generateAIAnswer } from '../services/aiService';
 import { BrainCircuit, Sparkles, AlertTriangle, CheckCircle, RefreshCw } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 export const DiagnosticoIA: React.FC = () => {
   const { user } = useAuth();
@@ -192,13 +193,22 @@ export const DiagnosticoIA: React.FC = () => {
             fontSize: '0.95rem',
             lineHeight: 1.8,
             color: 'var(--cor-texto)',
-            whiteSpace: 'pre-line',
+            whiteSpace: 'pre-wrap',
             background: 'rgba(0, 0, 0, 0.25)',
             padding: '24px',
             borderRadius: '12px',
-            border: '1px solid rgba(255, 255, 255, 0.05)'
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            width: '100%',
+            minWidth: 0,
+            maxWidth: '100%',
+            boxSizing: 'border-box',
+            overflowX: 'auto',
+            overflowWrap: 'anywhere',
+            wordBreak: 'break-word'
           }}>
-            {diagnostico}
+            <div className="ai-markdown-content">
+              <ReactMarkdown>{diagnostico}</ReactMarkdown>
+            </div>
           </div>
         </div>
       )}

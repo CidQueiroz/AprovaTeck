@@ -1144,6 +1144,58 @@ ______________CONTEUDO DOS CARDS____________
     padding: 10px;
 }
 
+.ai-markdown-content {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.ai-markdown-content h1,
+.ai-markdown-content h2,
+.ai-markdown-content h3,
+.ai-markdown-content h4 {
+    margin: 0 0 12px;
+    line-height: 1.35;
+}
+
+.ai-markdown-content p {
+    margin: 0 0 12px;
+}
+
+.ai-markdown-content ul,
+.ai-markdown-content ol {
+    margin: 0 0 14px;
+    padding-left: 24px;
+}
+
+.ai-markdown-content table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    margin: 14px 0;
+}
+
+.ai-markdown-content th,
+.ai-markdown-content td {
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    vertical-align: top;
+    white-space: normal;
+}
+
+.ai-markdown-content th {
+    font-weight: 700;
+}
+
+.ai-markdown-content blockquote {
+    margin: 0 0 14px;
+    padding-left: 14px;
+    border-left: 3px solid var(--cor-secundaria);
+}
+
 .project-card .card-actions {
     margin-top: auto;
     padding-top: 15px;
